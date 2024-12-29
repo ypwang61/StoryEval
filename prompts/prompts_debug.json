@@ -1,0 +1,29 @@
+{
+    "A_bear_opens_a_honey_jar_licks_the_honey_and_then_closes_the_jar.mp4": {
+        "prompt": "A bear opens a honey jar, licks the honey, and then closes the jar.",
+        "event_list": [
+            "A bear opens a honey jar",
+            "The bear licks the honey",
+            "And then the bear closes the jar"
+        ],
+        "class": [
+            "animal",
+            "creative",
+            "hard",
+            "3_events"
+        ]
+    },
+    "A_boy_climbs_a_tree_looks_out_over_the_yard_and_then_waves_to_the_sky.mp4": {
+        "prompt": "A boy climbs a tree, looks out over the yard, and then waves to the sky.",
+        "event_list": [
+            "A boy climbs a tree",
+            "The boy looks out over the yard",
+            "And then the boy waves to the sky"
+        ],
+        "class": [
+            "human",
+            "medium",
+            "3_events"
+        ]
+    }
+}
