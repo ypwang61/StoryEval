@@ -1,14 +1,12 @@
 # basic
 __pycache__
-wandb
 
 # runtime
 output
-# results/*.json
 info
 *backup*
 _clips
-
-# debug
-# results/*debug*
 results
+
+# llava
+LLaVA_NeXT

@@ -47,10 +47,17 @@ Presenting stories that containing consecutive events is still a challenging tas
 
 ## Process
 ### Installation
+First clone the repository and navigate into the folder
+```
+git clone git@github.com:ypwang61/StoryEval.git
+cd StoryEval
+```
 The package used in our experiment is the same as that in [LLaVA-NeXT](https://github.com/LLaVA-VL/LLaVA-NeXT).
 <!-- , the only difference is that we use `opencv-python-headless` and add `"typing_extensions`. -->
 ```
-cd LLaVA-NeXT
+git clone https://github.com/LLaVA-VL/LLaVA-NeXT
+mv LLaVA-NeXT LLaVA_NeXT
+cd LLaVA_NeXT
 conda create -n llava python=3.10 -y
 conda activate llava
 pip install --upgrade pip
