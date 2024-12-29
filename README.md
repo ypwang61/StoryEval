@@ -32,7 +32,10 @@ To address this gap, we introduce **StoryEval, a story-oriented benchmark** spec
  
  Completion list denotes if each event is completed (1) or not (0). More demos are available in [project website](https://ypwang61.github.io/project/StoryEval).
 
-<video src="https://github.com/user-attachments/assets/f834f302-5552-4fdd-a3d2-09dd684549a7" width="100%"></video>
+<video src="https://github.com/user-attachments/assets/26e6695e-19af-4906-9acc-b11c0374f886" width="100%"></video>
+
+
+
 
 
 
