@@ -23,6 +23,7 @@ To address this gap, we introduce **StoryEval, a story-oriented benchmark** spec
 
 
 ## News
+ * `2024.12.28`  🚀🚀 [StoryEval Code](https://github.com/ypwang61/StoryEval) is released! 
  * `2024.12.17`  🚀🚀 [StoryEval paper](https://arxiv.org/abs/2412.16211) is submitted to arXiv!
  * `2024.12.16`  🚀🚀 Release the [project website](https://ypwang61.github.io/project/StoryEval)!
  * `2024.12.14`  🚀 Add StoryEval prompts!
