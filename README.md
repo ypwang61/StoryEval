@@ -1,5 +1,6 @@
-# StoryEval
-A benchmark for evaluating video generative models in generating short stories.
+# **[CVPR 2025]** StoryEval: Is Your World Simulator a Good Story Presenter? A Consecutive Events-Based Benchmark for Future Long Video Generation
+Yiping Wang, Xuehai He, Kuan Wang, Luyao Ma, Jianwei Yang, Shuohang Wang, Simon Shaolei Du, Yelong Shen
+
 
 <!-- [[Website]](https://ypwang61.github.io/project/StoryEval) 
 [[Arxiv]](https://arxiv.org/abs/2412.16211) -->
@@ -23,6 +24,7 @@ To address this gap, we introduce **StoryEval, a story-oriented benchmark** spec
 
 
 ## News
+ * `2025.2.26`  🚀🚀 StoryEval is accepted by CVPR2025!
  * `2024.12.28`  🚀🚀 [StoryEval Code](https://github.com/ypwang61/StoryEval) is released! 
  * `2024.12.17`  🚀🚀 [StoryEval paper](https://arxiv.org/abs/2412.16211) is submitted to arXiv!
  * `2024.12.16`  🚀🚀 Release the [project website](https://ypwang61.github.io/project/StoryEval)!
