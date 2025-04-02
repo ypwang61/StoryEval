@@ -24,6 +24,7 @@ To address this gap, we introduce **StoryEval, a story-oriented benchmark** spec
 
 
 ## News
+ * `2025.4.2` 🚀 Add complete video examples [here](https://drive.google.com/drive/u/0/folders/1fpvSOmPMQ0jcYyZJ0G6rweKKe-2fbATn)!
  * `2025.2.26`  🚀🚀 StoryEval is accepted by CVPR2025!
  * `2024.12.28`  🚀🚀 [StoryEval Code](https://github.com/ypwang61/StoryEval) is released! 
  * `2024.12.17`  🚀🚀 [StoryEval paper](https://arxiv.org/abs/2412.16211) is submitted to arXiv!
