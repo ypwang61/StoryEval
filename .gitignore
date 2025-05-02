@@ -10,3 +10,7 @@ results
 
 # llava
 LLaVA_NeXT
+*test*
+
+# amlt
+*.yaml

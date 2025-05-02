@@ -17,6 +17,7 @@ import random
 from utils import load_video, load_video_by_opencv2, get_output_file_path
 from summarization import final_summarize
 
+
 # Constants
 TARGET_WIDTH = 512 # videos will be resized to 512x320 for evaluation
 TARGET_HEIGHT = 320
@@ -379,6 +380,45 @@ def process_videos_in_directory(
                         if_add_complete_list=False,
                         seed=seed,
                     )
+                elif eval_model_type == "qwen":
+                    # 使用 Qwen 生成描述
+                    text = processor.apply_chat_template(
+                        [{
+                            "role": "user",
+                            "content": description_question,
+                        }],
+                        tokenize=False,
+                        add_generation_prompt=True
+                    )
+                    image_inputs, video_inputs = process_vision_info([{
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "video",
+                                "video": video_path,
+                                "max_pixels": 360 * 420,
+                                "fps": 1.0,
+                            },
+                            {"type": "text", "text": description_question},
+                        ],
+                    }])
+                    inputs = processor(
+                        text=[text],
+                        images=image_inputs,
+                        videos=video_inputs,
+                        padding=True,
+                        return_tensors="pt",
+                    )
+                    inputs = inputs.to("cuda")
+
+                    with torch.no_grad():
+                        generated_ids = model.generate(**inputs, max_new_tokens=128)
+                    generated_ids_trimmed = [
+                        out_ids[len(in_ids):] for in_ids, out_ids in zip(inputs.input_ids, generated_ids)
+                    ]
+                    description = processor.batch_decode(
+                        generated_ids_trimmed, skip_special_tokens=True, clean_up_tokenization_spaces=False
+                    )[0]
                 else:
                     raise ValueError("Unsupported model type")
 
@@ -426,6 +466,64 @@ def process_videos_in_directory(
                     )
                     if completion_list == []:
                         reason = scoring_output
+                elif eval_model_type == "qwen":
+                    # 使用 Qwen 生成评分输出
+                    text = processor.apply_chat_template(
+                        [{
+                            "role": "user",
+                            "content": scoring_question,
+                        }],
+                        tokenize=False,
+                        add_generation_prompt=True
+                    )
+                    image_inputs, video_inputs = process_vision_info([{
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "video",
+                                "video": video_path,
+                                "max_pixels": 360 * 420,
+                                "fps": 1.0,
+                            },
+                            {"type": "text", "text": scoring_question},
+                        ],
+                    }])
+                    inputs = processor(
+                        text=[text],
+                        images=image_inputs,
+                        videos=video_inputs,
+                        padding=True,
+                        return_tensors="pt",
+                    )
+                    inputs = inputs.to("cuda")
+
+                    for attempt in range(max_num):
+                        with torch.no_grad():
+                            generated_ids = model.generate(**inputs, max_new_tokens=4096)
+                        generated_ids_trimmed = [
+                            out_ids[len(in_ids):] for in_ids, out_ids in zip(inputs.input_ids, generated_ids)
+                        ]
+                        scoring_output = processor.batch_decode(
+                            generated_ids_trimmed, skip_special_tokens=True, clean_up_tokenization_spaces=False
+                        )[0]
+
+                        if not if_add_complete_list and len(scoring_output) > 0:
+                            scoring_list = scoring_output
+                            break
+                        else:
+                            print(f"Scoring output:\n{scoring_output}\n")
+                            completion_list = get_complete_list_from_output(scoring_output)
+
+                            if event_list_len is not None and len(completion_list) == event_list_len:
+                                break
+                            else:
+                                print(f"-> ERROR: Completion list length {len(completion_list)} does not match event list length {event_list_len}, retrying...")
+
+                    else:
+                        print(f"-- ERROR: Completion list length does not match after {max_num} retries, skipping...")
+                        scoring_output = f"Error: Completion list length does not match after {max_num} retries."
+                        completion_list = []
+
                 else:
                     raise ValueError("Unsupported model type")
 
@@ -526,8 +624,8 @@ if __name__ == "__main__":
         "--eval_model_type",
         type=str,
         default="llava",
-        choices=["llava", "gpt4o"],
-        help="Model used for evaluation, GPT4o or LLaVA-OV-Chat-72B",
+        choices=["llava", "gpt4o", "qwen"],
+        help="Model used for evaluation, GPT4o or LLaVA-OV-Chat-72B or Qwen2-VL-72B",
     )
 
     # LLaVA arguments
@@ -535,7 +633,7 @@ if __name__ == "__main__":
         "--pretrained",
         type=str,
         default="lmms-lab/llava-onevision-qwen2-72b-ov-chat",
-        help="Pretrained model name",
+        help="Pretrained model name, also can be Qwen/Qwen2-VL-7B-Instruct",
     )
     parser.add_argument(
         "--llava_model_name", 
@@ -687,6 +785,12 @@ if __name__ == "__main__":
             "api_base": args.api_base,
             "deployment_name": args.deployment_name,
         }
+    
+    elif args.eval_model_type == 'qwen':
+        from transformers import Qwen2VLForConditionalGeneration, AutoTokenizer, AutoProcessor
+        from qwen_vl_utils import process_vision_info
+
+        api_args = None
 
     print(f"================= Start Processing =================")
 
@@ -707,6 +811,15 @@ if __name__ == "__main__":
         model.eval()
     elif args.eval_model_type == "gpt4o": # For GPT4o, no need to load a model locally
         pass
+    elif args.eval_model_type == "qwen":
+        # load model
+        model = Qwen2VLForConditionalGeneration.from_pretrained(
+            args.pretrained, torch_dtype="auto", device_map="auto"
+        )
+        model.eval()
+
+        # load processor
+        processor = AutoProcessor.from_pretrained(args.pretrained)
     else:
         raise ValueError("Unsupported model type")
 
